@@ -8,7 +8,12 @@ open NUnit.Framework
 open Projekt.Util
 open FsUnit
 
-let runningOnMono = try System.Type.GetType("Mono.Runtime") <> null with e -> false
+let runningOnMono =
+    try
+        let typ = System.Type.GetType("Mono.Runtime")
+        let version = (typ.Assembly.GetName().Version)
+        typ <> null && (version.Major <> 4)
+    with e -> false
 
 let assertDeepEquals expected result =
   Assert.IsTrue (XNode.DeepEquals(expected, result),
@@ -231,6 +236,8 @@ let ``delFile should remove file if present`` () =
     | Failure s -> Assert.Fail s
     | Success result ->
         let expected = XElement.Parse delExpected
+        printfn "%A" expected
+        printfn "%A" result
         assertDeepEquals expected result
 
 [<Test>]
