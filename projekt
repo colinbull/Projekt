@@ -1,0 +1,4 @@
+#!/bin/sh -x
+
+mono /Library/Projekt/Projekt.exe $@
+
